@@ -1,4 +1,5 @@
 #define init
+    trace("WIBBLY 0.2 LOADED!!");
     // WIGGLERCOLA ULTIMATE SHARED FUNCTION LIBRARY!!!!!!!! //
     /*
         CURRENT FEATURES
@@ -18,7 +19,7 @@
     
     */
     
-    trace("WIBBLY LOADED!!");
+    
     
     setup_gamecont();
 #define setup_gamecont
