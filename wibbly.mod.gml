@@ -1,5 +1,5 @@
 #define init
-    trace("WIBBLY 0.2 LOADED!!");
+    trace("WIBBLY 0.2.1 LOADED!!");
     // WIGGLERCOLA ULTIMATE SHARED FUNCTION LIBRARY!!!!!!!! //
     /*
         CURRENT FEATURES
@@ -16,20 +16,18 @@
         (amax != 55 + bonus){
             apply max ammo
         }
-    
+        rad max controller. i want to make a rad pouch trinket
     */
-    
-    
     
     setup_gamecont();
 #define setup_gamecont
     with(instances_matching(GameCont, "wibbly", null)){
         wibbly                      = true;
-        wib_ammobonus			    = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
-        wib_wantmusclefixer         = false;
+        wib_ammoBonus			    = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
+        wib_wantMaxAmmoFixer        = false;
     }  
     
-#macro ammoBonus    GameCont.wib_ammobonus;
+#macro ammoBonus    GameCont.wib_ammoBonus;
 
 #define game_start
     setup_gamecont();
@@ -46,38 +44,39 @@
     with(instances_matching(Player, "index", _index)){
         typ_amax[_ammoType] += _count;
     }
-    ammoBonus[_index][@_ammoType] += _count;
-    BackMuscleController_spawn();
+    ammoBonus[_index][@_ammoType - 1] += _count;
+    MaxAmmoController_spawn();
     
 #define maxAmmo_add_raw(_index, _ammoType, _count)
      // just in case you dont need the type increase automatically for some reason
-    ammoBonus[_index][@_ammoType] += _count;
-    BackMuscleController_spawn();
+    ammoBonus[_index][@_ammoType - 1] += _count;
+    MaxAmmoController_spawn();
     
-#define BackMuscleController_spawn
- 	if(array_length(instances_matching(CustomObject, "name", "wib_backMuscleController")) = 0){
-		BackMuscleController_create(10016, 10016);
+#define MaxAmmoController_spawn
+ 	if(array_length(instances_matching(CustomObject, "name", "wib_maxAmmoController")) = 0){
+		MaxAmmoController_create(10016, 10016);
+		GameCont.wib_wantMaxAmmoFixer = true;
 	}
 
-#define BackMuscleController_create(_x, _y)
+#define MaxAmmoController_create(_x, _y)
     with(instance_create(_x, _y, CustomObject)){
-        name            = "wib_backMuscleController";
+        name            = "wib_maxAmmoController";
             
         prev_muscle     = skill_get(mut_back_muscle);
         
-        on_step         = BackMuscleController_step;
+        on_step         = MaxAmmoController_step;
         
         return self;
     }
     
-#define BackMuscleController_step
+#define MaxAmmoController_step
     if(prev_muscle != skill_get(mut_back_muscle)){
         
          // apply ammo changes
         with(Player){
-            var _ammoType = 0;
+            var _ammoType = 1;
             repeat(5){
-                typ_amax[_ammoType + 1] += GameCont.wib_ammobonus[index][_ammoType];
+                typ_amax[_ammoType] += ammoBonus[index][_ammoType - 1];
                 _ammoType += 1;
             }
         }
