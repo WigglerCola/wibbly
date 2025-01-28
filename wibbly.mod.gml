@@ -1,5 +1,5 @@
 #define init
-    trace("WIBBLY 0.2.4 LOADED!!");
+    trace("WIBBLY 0.2.5 LOADED!!");
     // WIGGLERCOLA ULTIMATE SHARED FUNCTION LIBRARY!!!!!!!! //
     /*
         CURRENT FEATURES
@@ -119,7 +119,7 @@
 	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
     with(_player){
         typ_ammo[_ammoType] += _count;
-        ammoGainBonus[_index][@_ammoType - 1] += _count;
+        ammoGainBonus[index][@_ammoType - 1] += _count;
     }
     PlayerStatsController_spawn();
 
@@ -127,7 +127,7 @@
 	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
     with(_player){
     	maxspeed += _speed;
-    	speedBonus[_index] += _speed;
+    	speedBonus[index] += _speed;
     }
     PlayerStatsController_spawn();
 
@@ -135,7 +135,7 @@
 	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
     with(_player){
     	reloadspeed += _bonus;
-    	reloadBonus[_index] += _bonus;
+    	reloadBonus[index] += _bonus;
     }
     PlayerStatsController_spawn();
     
@@ -146,10 +146,29 @@
     	if(accuracy < 0){ // negative makes it wrap around again
        		accuracy = 0;
     	}
-    	accuracyBonus[_index] += _bonus;
+    	accuracyBonus[index] += _bonus;
     }
     PlayerStatsController_spawn();
 
+#define projectileSpeedBonus_add(_index, _bonus)
+	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
+    with(_player){
+    	projectileSpeedBonus[index] += _bonus;
+    }
+    ProjectileSpeedController_spawn();
+    
+#define radMaxBonus_add(_bonus)
+		radMaxBonus += _bonus;
+	if(GameCont.level != 10){
+		global.wantRadMaxBuffer = true;
+	} else {
+		GameCont.radmaxextra += _bonus
+		 // always keep 20 rad capacity at least.
+		if(radMaxBonus < -580){
+			GameCont.radmaxextra = -580;
+		}
+	}
+    
 #define ammoMaxBonus_add_raw(_index, _ammoType, _count)
     ammoMaxBonus[_index][@_ammoType - 1] += _count;
     PlayerStatsController_spawn();
@@ -242,10 +261,6 @@
     		livingPlayers[_index] = 1;	
     	}
     }
-    
-#define projectileSpeedBonus_add(_index, _bonus)
-    projectileSpeedBonus[_index] += _bonus;
-    ProjectileSpeedController_spawn();
 
 #define ProjectileSpeedController_spawn
  	if(array_length(instances_matching(CustomObject, "name", "wib_ProjectileSpeedController")) = 0){
@@ -312,19 +327,6 @@
 					}
 				}
 			}
-		}
-	}
-	
-#define radMaxBonus_add(_bonus)
-		radMaxBonus += _bonus;
-	if(GameCont.level != 10){
-		global.wantRadMaxBuffer = true;
-	} else {
-		GameCont.radmaxextra += _bonus
-		if(radMaxBonus < 20){
-			GameCont.radmaxextra = -20;
-			// u can get an extra 20 max rads if u dip to the minimum then get it back
-			// not sure why, so let's call it a feature.
 		}
 	}
     
