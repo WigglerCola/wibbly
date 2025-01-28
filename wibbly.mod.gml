@@ -1,5 +1,5 @@
 #define init
-    trace("WIBBLY 0.2.6 LOADED!!");
+    trace("WIBBLY 0.2.7 LOADED!!");
     // WIGGLERCOLA ULTIMATE SHARED FUNCTION LIBRARY!!!!!!!! //
     /*
         CURRENT FEATURES
