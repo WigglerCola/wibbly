@@ -1,5 +1,5 @@
 #define init
-    trace("WIBBLY 0.2.5 LOADED!!");
+    trace("WIBBLY 0.2.6 LOADED!!");
     // WIGGLERCOLA ULTIMATE SHARED FUNCTION LIBRARY!!!!!!!! //
     /*
         CURRENT FEATURES
@@ -31,7 +31,9 @@
     
     /*
         TODO
-        rad max controller. i want to make a rad pouch trinket and radmaxpickups use one already
+        right now if u get a stat that has a minimum past its minimum then it doesn't gain properly, starting at minimum instead of the negative
+        not a huge deal at all u can probably just leave it.. maybe itll end up with a trinket having something exploitable, maybe that would be cool though
+        if i dont fix it then ill call it a feature
     */
 
 
@@ -119,6 +121,9 @@
 	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
     with(_player){
         typ_ammo[_ammoType] += _count;
+        if(typ_ammo[_ammoType] < 1){
+        	typ_ammo[_ammoType] = 1;
+        }
         ammoGainBonus[index][@_ammoType - 1] += _count;
     }
     PlayerStatsController_spawn();
@@ -127,6 +132,9 @@
 	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
     with(_player){
     	maxspeed += _speed;
+    	if(maxspeed != 0 && maxspeed < 2.1){
+    		maxspeed = 2.1; // minimum speed needed to not get stuck forever on cobwebs
+    	}
     	speedBonus[index] += _speed;
     }
     PlayerStatsController_spawn();
@@ -135,6 +143,9 @@
 	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
     with(_player){
     	reloadspeed += _bonus;
+    	if(reloadspeed < 0.05){
+    		reloadspeed = 0.05;
+    	}
     	reloadBonus[index] += _bonus;
     }
     PlayerStatsController_spawn();
@@ -221,6 +232,9 @@
             var _ammoType = 1;
             repeat(5){
                 typ_amax[_ammoType] += ammoMaxBonus[index][_ammoType - 1];
+                if(typ_amax[_ammoType] < 1){
+                	typ_amax[_ammoType] = 1;
+                }
                 _ammoType += 1;
             }
         }
