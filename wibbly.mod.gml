@@ -106,42 +106,48 @@
     	}
 	}
 	
+	// input -1 to affect all players, raws don't have that
 #define ammoMaxBonus_add(_index, _ammoType, _count)
-    with(instances_matching(Player, "index", _index)){
+	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
+    with(_player){
         typ_amax[_ammoType] += _count;
+        ammoMaxBonus[index][@_ammoType - 1] += _count;
     }
-    ammoMaxBonus[_index][@_ammoType - 1] += _count;
     PlayerStatsController_spawn();
 
 #define ammoGainBonus_add(_index, _ammoType, _count)
-    with(instances_matching(Player, "index", _index)){
+	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
+    with(_player){
         typ_ammo[_ammoType] += _count;
+        ammoGainBonus[_index][@_ammoType - 1] += _count;
     }
-    ammoGainBonus[_index][@_ammoType - 1] += _count;
     PlayerStatsController_spawn();
 
 #define speedBonus_add(_index, _speed)
-    with(instances_matching(Player, "index", _index)){
+	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
+    with(_player){
     	maxspeed += _speed;
+    	speedBonus[_index] += _speed;
     }
-    speedBonus[_index] += _speed;
     PlayerStatsController_spawn();
 
 #define reloadBonus_add(_index, _bonus)
-    with(instances_matching(Player, "index", _index)){
+	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
+    with(_player){
     	reloadspeed += _bonus;
+    	reloadBonus[_index] += _bonus;
     }
-    reloadBonus[_index] += _bonus;
     PlayerStatsController_spawn();
     
 #define accuracyBonus_add(_index, _bonus)
-    with(instances_matching(Player, "index", _index)){
+	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
+    with(_player){
     	accuracy -= _bonus;
     	if(accuracy < 0){ // negative makes it wrap around again
        		accuracy = 0;
-       }
+    	}
+    	accuracyBonus[_index] += _bonus;
     }
-    accuracyBonus[_index] += _bonus;
     PlayerStatsController_spawn();
 
 #define ammoMaxBonus_add_raw(_index, _ammoType, _count)
