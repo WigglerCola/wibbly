@@ -1,5 +1,5 @@
 #define init
-    trace("WIBBLY 0.2.7 LOADED!!");
+    trace("WIBBLY 0.2.8 LOADED!!");
     // WIGGLERCOLA ULTIMATE SHARED FUNCTION LIBRARY!!!!!!!! //
     /*
         CURRENT FEATURES
@@ -89,10 +89,8 @@
 	}
 
 #define level_start
-	 // Player Stat Bonuses Controller:
-	if(GameCont.wib_wantStatsController	= true){
-		PlayerStatsController_spawn();
-	}
+	 // Player Manager:
+	PlayerManager_create(10016, 10016);
 	
 	 // Projectile Speed Bonus Controller:
 	if(GameCont.wib_wantProjectileController = true){
@@ -115,7 +113,6 @@
         typ_amax[_ammoType] += _count;
         ammoMaxBonus[index][@_ammoType - 1] += _count;
     }
-    PlayerStatsController_spawn();
 
 #define ammoGainBonus_add(_index, _ammoType, _count)
 	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
@@ -126,7 +123,6 @@
         }
         ammoGainBonus[index][@_ammoType - 1] += _count;
     }
-    PlayerStatsController_spawn();
 
 #define speedBonus_add(_index, _speed)
 	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
@@ -137,7 +133,6 @@
     	}
     	speedBonus[index] += _speed;
     }
-    PlayerStatsController_spawn();
 
 #define reloadBonus_add(_index, _bonus)
 	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
@@ -148,7 +143,6 @@
     	}
     	reloadBonus[index] += _bonus;
     }
-    PlayerStatsController_spawn();
     
 #define accuracyBonus_add(_index, _bonus)
 	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
@@ -159,7 +153,6 @@
     	}
     	accuracyBonus[index] += _bonus;
     }
-    PlayerStatsController_spawn();
 
 #define projectileSpeedBonus_add(_index, _bonus)
 	var _player = _index = -1 ? Player : instances_matching(Player, "index", _index);
@@ -182,33 +175,31 @@
     
 #define ammoMaxBonus_add_raw(_index, _ammoType, _count)
     ammoMaxBonus[_index][@_ammoType - 1] += _count;
-    PlayerStatsController_spawn();
 
 #define ammoGainBonus_add_raw(_index, _ammoType, _count)
     ammoGainBonus[_index][@_ammoType - 1] += _count;
-    PlayerStatsController_spawn();
 
 #define speedBonus_add_raw(_index, _speed)
     speedBonus[_index] += _speed;
-    PlayerStatsController_spawn();
 
 #define reloadBonus_add_raw(_index, _bonus)
     reloadBonus[_index] += _bonus;
-    PlayerStatsController_spawn();
     
 #define accuracyBonus_add_raw(_index, _bonus)
     accuracyBonus[_index] += _bonus;
-    PlayerStatsController_spawn();
-    
-#define PlayerStatsController_spawn
+
+
+//#define PlayerManager_spawn
+/*
  	if(array_length(instances_matching(CustomObject, "name", "wib_PlayerStatsController")) = 0){
 		PlayerStatsController_create(10016, 10016);
 		GameCont.wib_wantStatsController = true;
 	}
+*/
 
-#define PlayerStatsController_create(_x, _y)
+#define PlayerManager_create(_x, _y)
     with(instance_create(_x, _y, CustomObject)){
-        name            = "wib_PlayerStatsController";
+        name            = "wib_PlayerManager";
             
         prev_muscle     = skill_get(mut_back_muscle);
 		livingPlayers	= [
@@ -217,13 +208,16 @@
 							array_length(instances_matching(Player, "index", 2)), 
 							array_length(instances_matching(Player, "index", 3))
 						];
+		playerX 		= [_x, _x, _x, _x];
+		playerY 		= [_y, _y, _y, _y];
+		playerRace		= ["", "", "", ""];
         
-        on_step         = PlayerStatsController_step;
+        on_step         = PlayerManager_step;
         
         return self;
     }
     
-#define PlayerStatsController_step
+#define PlayerManager_step
 	 // Fix if Back Muscle Changes:
     if(prev_muscle != skill_get(mut_back_muscle)){
         
@@ -243,10 +237,32 @@
         prev_muscle = skill_get(mut_back_muscle);
     }
     
-	 // Reapply stat boosts on respawn
+     // i know where u are:
+    with(Player){
+		other.playerX[index]	= x;
+		other.playerY[index]	= y;
+		other.playerRace[index] = race;
+    }
+    
+	 // Run respawn and death functions:
     for(var _index = 0; _index < maxp; _index++){
     	if(array_length(instances_matching(Player, "index", _index)) = 0){
-    		livingPlayers[_index] = 0;	
+    		if(livingPlayers[_index] != 0){
+    			 // player has died :(
+    			livingPlayers[_index] = 0;	
+
+    			 // NTEI functions:
+    			if(mod_exists("mod", "ExIso_Main")){
+					if(is_string(playerRace[_index]) && mod_script_exists("race", playerRace[_index], "race_ntei")){
+						mod_script_call("mod", "ExIso_Main", "ntei_race_deathstat", playerRace[_index]);
+					}
+    			}
+    	
+    			 // Trinket functions:
+    			if(mod_exists("mod", "Trinkets")){
+    				mod_script_call("mod", "Trinkets", "drop_my_items_please", _index, playerX[_index], playerY[_index]);
+    			}
+    		}
     	} else {
     		 // player has respawned!! :)
     		if(livingPlayers[_index] = 0){
