@@ -1,5 +1,5 @@
 #define init
-    trace("WIBBLY 0.2.9 LOADED!!");
+    trace("WIBBLY 0.3 LOADED!!");
     // WIGGLERCOLA ULTIMATE SHARED FUNCTION LIBRARY!!!!!!!! //
     /*
         CURRENT FEATURES
@@ -7,7 +7,7 @@
         STAT BONUSES APPLY CORRECTLY ON RESPAWN (Max Ammo, Ammo Gain, Max Speed, Reload Speed, Accuracy)
         PROJECTILE SPEED BONUS HANDLER
         RAD MAX BONUS HANDLER
-        DEATH HANDLER FOR NTEI AND TREASURE TROVE FEATURES
+        DEATH HANDLER FOR FRONTIER AND TREASURE TROVE FEATURES
         
     	ammoMaxBonus_add(_index, _ammoType, _count);
     	ammoGainBonus_add(_index, _ammoType, _count);
@@ -250,12 +250,12 @@
     		if(livingPlayers[_index] != 0){
     			 // player has died :(
     			livingPlayers[_index] = 0;	
-	    			 // NTEI functions:
-	    			if(mod_exists("mod", "ExIso_Main")){
+	    			 // Frontier functions:
+	    			if(mod_exists("mod", "Frontier_Main")){
 	    				 // Death Stat + Cyberspace:
 	    				if(!GameCont.win){
-							if(is_string(playerRace[_index]) && mod_script_exists("race", playerRace[_index], "race_ntei")){
-								mod_script_call("mod", "ExIso_Main", "ntei_race_deathstat", playerRace[_index]);
+							if(is_string(playerRace[_index]) && mod_script_exists("race", playerRace[_index], "race_frontier")){
+								mod_script_call("mod", "Frontier_Main", "frontier_race_deathstat", playerRace[_index]);
 							}
 							if(playerRace[_index] = "robot"){
 								if(!instance_exists(Player)){
@@ -264,8 +264,8 @@
 							}
 						 // Win Stat:
 	    				} else {
-							if(is_string(playerRace[_index]) && mod_script_exists("race", playerRace[_index], "race_ntei")){
-								mod_script_call("mod", "ExIso_Main", "ntei_race_winstat", playerRace[_index]);
+							if(is_string(playerRace[_index]) && mod_script_exists("race", playerRace[_index], "race_frontier")){
+								mod_script_call("mod", "Frontier_Main", "frontier_race_winstat", playerRace[_index]);
 							}	    					
 	    				}
 	    			}
