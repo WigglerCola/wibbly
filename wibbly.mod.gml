@@ -1,5 +1,5 @@
 #define init
-    trace("WIBBLY 0.3 LOADED!!");
+    trace("WIBBLY 0.3.2 LOADED!!");
     // WIGGLERCOLA ULTIMATE SHARED FUNCTION LIBRARY!!!!!!!! //
     /*
         CURRENT FEATURES
@@ -257,7 +257,7 @@
 							if(is_string(playerRace[_index]) && mod_script_exists("race", playerRace[_index], "race_frontier")){
 								mod_script_call("mod", "Frontier_Main", "frontier_race_deathstat", playerRace[_index]);
 							}
-							if(playerRace[_index] = "robot"){
+							if(array_find_index(playerRace, "robot") != -1){
 								if(!instance_exists(Player)){
 									mod_script_call("area", "cyberspace", "cyberspace_revive", _index);
 								}
